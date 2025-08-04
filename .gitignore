@@ -31,3 +31,6 @@ go.work.sum
 # Editor/IDE
 .idea/
 .vscode/
+
+# Ignore pre-commit hook outputs
+megalinter-reports
