@@ -3,10 +3,10 @@ package cloudflare
 import (
 	"context"
 	"fmt"
-	"log"
 
-	"github.com/brucellino/traefik-cloudflare-controller/config"
-	"github.com/brucellino/traefik-cloudflare-controller/types"
+	"github.com/brucellino/nomad-traefik-cloudflare-controller/config"
+	"github.com/brucellino/nomad-traefik-cloudflare-controller/types"
+	"github.com/charmbracelet/log"
 	"github.com/cloudflare/cloudflare-go"
 )
 
@@ -74,7 +74,7 @@ func (c *Client) CreateARecord(ctx context.Context, target string) error {
 		return fmt.Errorf("Failed to create A record %w", err)
 	}
 
-	log.Printf("Created A record for %s -> %s", c.config.DNSRecordName, target)
+	log.Info("Created A record", "name", c.config.DNSRecordName, "target", target)
 	return nil
 }
 
@@ -96,7 +96,7 @@ func (c *Client) UpdateARecord(ctx context.Context, recordID, target string) err
 		return fmt.Errorf("Unable to update DNS Record: %w", err)
 	}
 
-	log.Printf("Updated A record: %s -> %s", c.config.DNSRecordName, target)
+	log.Info("Updated A record", "name", c.config.DNSRecordName, "target", target)
 	return nil
 
 }
@@ -118,13 +118,13 @@ func (c *Client) SyncARecords(ctx context.Context, targetIPs []string) error {
 		return fmt.Errorf("failed to get current A records: %w", err)
 	}
 
-	log.Printf("Current A records: %d, Target IPs: %v", len(currentRecords), targetIPs)
+	log.Info("Syncing A records", "current_count", len(currentRecords), "target_ips", targetIPs)
 
 	// If no target IPs, delete all records
 	if len(targetIPs) == 0 {
 		for _, record := range currentRecords {
 			if err := c.DeleteARecord(ctx, record.ID); err != nil {
-				log.Printf("Error deleting record %s: %v", record.ID, err)
+				log.Error("Error deleting record", "record_id", record.ID, "error", err)
 			}
 		}
 		return nil
@@ -145,7 +145,7 @@ func (c *Client) SyncARecords(ctx context.Context, targetIPs []string) error {
 	for target, recordID := range currentTargets {
 		if !targetSet[target] {
 			if err := c.DeleteARecord(ctx, recordID); err != nil {
-				log.Printf("Error deleting record %s: %v", recordID, err)
+				log.Error("Error deleting record", "record_id", recordID, "error", err)
 			}
 		}
 	}
@@ -155,7 +155,7 @@ func (c *Client) SyncARecords(ctx context.Context, targetIPs []string) error {
 		if _, exists := currentTargets[target]; !exists {
 			fmt.Print(exists)
 			if err := c.CreateARecord(ctx, target); err != nil {
-				log.Printf("Error creating record for %s: %v", target, err)
+				log.Error("Error creating record", "target", target, "error", err)
 			}
 		}
 	}

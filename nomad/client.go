@@ -3,11 +3,11 @@ package nomad
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
-	"github.com/brucellino/traefik-cloudflare-controller/config"
-	"github.com/brucellino/traefik-cloudflare-controller/types"
+	"github.com/brucellino/nomad-traefik-cloudflare-controller/config"
+	"github.com/brucellino/nomad-traefik-cloudflare-controller/types"
+	"github.com/charmbracelet/log"
 	nomadapi "github.com/hashicorp/nomad/api"
 )
 
@@ -58,7 +58,7 @@ func (c *Client) GetTraefikNodes(ctx context.Context) ([]types.NodeInfo, error) 
 		// get node information
 		node, _, err := c.client.Nodes().Info(alloc.NodeID, nil)
 		if err != nil {
-			log.Printf("Warning: failed to get node info for %s: %v", alloc.NodeID, err)
+			log.Warn("Failed to get node info", "node_id", alloc.NodeID, "error", err)
 			continue
 		}
 
@@ -66,7 +66,7 @@ func (c *Client) GetTraefikNodes(ctx context.Context) ([]types.NodeInfo, error) 
 		// nodeAddr := c.extractNodeAddress(node)
 		// // check for errors
 		// if nodeAddr == "" {
-		// 	log.Printf("Warning: could not get the public IP address of the node %s", node.ID)
+		// 	log.Warn("Could not get the public IP address of the node", "node_id", node.ID)
 		// 	continue
 		// }
 
@@ -93,7 +93,7 @@ func (c *Client) GetTraefikNodes(ctx context.Context) ([]types.NodeInfo, error) 
 // It consumes the Nomad Events api described in types
 func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- types.Event) error {
 
-	log.Println("Starting Nomad Event consumer")
+	log.Info("Starting Nomad Event consumer")
 
 	// Create query options for event streaming
 	queryOpts := &nomadapi.QueryOptions{
@@ -121,7 +121,7 @@ func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- types.Event) 
 			return ctx.Err()
 		case eventWrapper := <-eventStream:
 			if eventWrapper.Err != nil {
-				log.Printf("Event stream error: %v", eventWrapper.Err)
+				log.Error("Event stream error", "error", eventWrapper.Err)
 				continue
 			}
 

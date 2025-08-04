@@ -2,16 +2,17 @@ package main
 
 import (
 	"context"
-	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
-	"github.com/brucellino/traefik-cloudflare-controller/cloudflare"
-	"github.com/brucellino/traefik-cloudflare-controller/config"
-	"github.com/brucellino/traefik-cloudflare-controller/nomad"
-	"github.com/brucellino/traefik-cloudflare-controller/types"
+	"github.com/brucellino/nomad-traefik-cloudflare-controller/cloudflare"
+	"github.com/brucellino/nomad-traefik-cloudflare-controller/config"
+	"github.com/brucellino/nomad-traefik-cloudflare-controller/nomad"
+	"github.com/brucellino/nomad-traefik-cloudflare-controller/types"
+	"github.com/charmbracelet/log"
 )
 
 type Controller struct {
@@ -21,27 +22,49 @@ type Controller struct {
 }
 
 func main() {
-	log.Println("Starting Traefik Cloudflare Controller")
+	// Configure logger.
+	// This application uses the Charm Bracelet Log package.
+	logLevel := log.InfoLevel
+	if envLevel := os.Getenv("LOG_LEVEL"); envLevel != "" {
+		switch strings.ToLower(envLevel) {
+		case "debug":
+			logLevel = log.DebugLevel
+		case "info":
+			logLevel = log.InfoLevel
+		case "warn", "warning":
+			logLevel = log.WarnLevel
+		case "error":
+			logLevel = log.ErrorLevel
+		case "fatal":
+			logLevel = log.FatalLevel
+		}
+	}
+
+	log.SetLevel(logLevel)
+	log.SetReportTimestamp(true)
+	log.SetReportCaller(false)
+
+	log.Info("Starting Traefik Cloudflare Controller", "log_level", logLevel)
 
 	// Load configuration
 	cfg, err := config.LoadConfig()
 
 	if err != nil {
-		log.Fatalf("Failed to load configuration: %v", err)
+		log.Fatal("Failed to load configuration", "error", err)
 	}
 
 	// Create Nomad client
 	nomadClient, err := nomad.NewClient(cfg)
 
 	if err != nil {
-		log.Fatalf("Failed to create nomad client: %v", err)
+		log.Fatal("Failed to create nomad client", "error", err)
 	}
 
 	// Create Cloudflare client
 	cloudflareClient, err := cloudflare.NewClient(cfg)
 
 	if err != nil {
-		log.Fatalf("Failed to create cloudflare client: %v", err)
+		log.Fatal("Failed to create cloudflare client", "error", err)
 	}
 
 	// Create controller instance
@@ -62,35 +85,37 @@ func main() {
 	// anonymous function to receive messages in the channel
 	go func() {
 		<-sigChan
-		log.Println("Received shutdown signal. Stopping... ")
+		log.Info("Received shutdown signal. Stopping...")
 		cancel()
 	}()
 
 	// Start the controller
 	if err := controller.Run(ctx); err != nil && err != context.Canceled {
-		log.Fatalf("Controller error: %v", err)
+		log.Fatal("Controller error", "error", err)
 	}
 
-	log.Println("Controller stopped")
+	log.Info("Controller stopped")
 }
 
 // Run is the main work function
 func (c *Controller) Run(ctx context.Context) error {
-	log.Printf("Controller starting with config: Nomad=%s, Job=%s, DNS=%s",
-		c.config.NomadAddress, c.config.TraefikJobName, c.config.DNSRecordName)
+	log.Info("Controller starting",
+		"nomad", c.config.NomadAddress,
+		"job", c.config.TraefikJobName,
+		"dns", c.config.DNSRecordName)
 
 	// Initial sync
 	//
-	log.Printf("running with config %s", c.config)
+	log.Debug("Running with config", "config", c.config)
 	if err := c.syncDNSRecords(ctx); err != nil {
-		log.Printf("Initial sync failed: %v", err)
+		log.Error("Initial sync failed", "error", err)
 	}
 
 	// Set up event watching
 	eventChan := make(chan types.Event, 100)
 	go func() {
 		if err := c.nomadClient.WatchEvents(ctx, eventChan); err != nil {
-			log.Printf("Event watcher error: %v", err)
+			log.Error("Event watcher error", "error", err)
 		}
 	}()
 
@@ -106,24 +131,24 @@ func (c *Controller) Run(ctx context.Context) error {
 
 		// Nomad event in channel
 		case event := <-eventChan:
-			log.Printf("Received event: %s", event.Type)
+			log.Info("Received event", "type", event.Type)
 			// Debounce events by waiting a bit before syncing
 			time.Sleep(2 * time.Second)
 			if err := c.syncDNSRecords(ctx); err != nil {
-				log.Printf("Sync after event failed: %v", err)
+				log.Error("Sync after event failed", "error", err)
 			}
 		// Ticker event in channel
 		case <-ticker.C:
-			log.Println("Performing periodic sync...")
+			log.Info("Performing periodic sync...")
 			if err := c.syncDNSRecords(ctx); err != nil {
-				log.Printf("Periodic sync failed: %v", err)
+				log.Error("Periodic sync failed", "error", err)
 			}
 		}
 	}
 }
 
 func (c *Controller) syncDNSRecords(ctx context.Context) error {
-	log.Println("Syncing DNS records...")
+	log.Info("Syncing DNS records...")
 
 	// Get current Traefik nodes
 	nodes, err := c.nomadClient.GetTraefikNodes(ctx)
@@ -131,14 +156,14 @@ func (c *Controller) syncDNSRecords(ctx context.Context) error {
 		return err
 	}
 
-	log.Printf("Found %d Traefik nodes", len(nodes))
+	log.Info("Found Traefik nodes", "count", len(nodes))
 
 	// Extract IP addresses
 	var ips []string
 	for _, node := range nodes {
 		if node.Status == "ready" && node.PublicIPAddress != "" {
 			ips = append(ips, node.PublicIPAddress)
-			log.Printf("Traefik node: %s (%s) - %s", node.Name, node.ID, node.PublicIPAddress)
+			log.Debug("Traefik node", "name", node.Name, "id", node.ID, "ip", node.PublicIPAddress)
 		}
 	}
 
@@ -147,6 +172,6 @@ func (c *Controller) syncDNSRecords(ctx context.Context) error {
 		return err
 	}
 
-	log.Printf("DNS sync completed. %d IP addresses configured.", len(ips))
+	log.Info("DNS sync completed", "ip_count", len(ips))
 	return nil
 }
