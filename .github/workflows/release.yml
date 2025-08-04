@@ -54,6 +54,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deliver:
+    permissions:
+      packages: write
     needs:
       - release
     runs-on: ubuntu-latest
