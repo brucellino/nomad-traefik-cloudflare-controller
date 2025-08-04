@@ -71,6 +71,7 @@ jobs:
       - name: Build container image
         env:
           IMAGE_TAG: latest
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pack build "ghcr.io/brucellino/nomad-traefik-cloudflare-controller:${IMAGE_TAG}" \
             --builder "heroku/builder:24" --path=. \
