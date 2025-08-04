@@ -22,6 +22,8 @@ jobs:
         run: go build .
 
   release:
+    needs:
+      - test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,3 +38,35 @@ jobs:
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deliver:
+    needs:
+      - release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install pack CLI
+        uses: buildpacks/github-actions/setup-pack@v5.7.2
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build container image
+        env:
+          IMAGE_TAG: latest
+        run: |
+          pack build "ghcr.io/brucellino/nomad-traefik-cloudflare-controller:${IMAGE_TAG}" \
+            --builder "heroku/builder:24" --path=. \
+            --env CGO_ENABLED=0 \
+            --env BP_OCI_TITLE="Nomad Traefik Cloudflare Controller" \
+            --env BP_OCI_DESCRIPTION="Controller for managing Cloudflare DNS records for Traefik ingress in Nomad" \
+            --env BP_OCI_URL="https://github.com/brucellino/nomad-traefik-cloudflare-controller" \
+            --env BP_OCI_SOURCE="https://github.com/brucellino/nomad-traefik-cloudflare-controller" \
+            --env BP_OCI_VERSION="latest" \
+            --env BP_OCI_REVISION="latest" \
+            --env BP_OCI_VENDOR="brucellino" \
+            --env BP_OCI_LICENSES="MIT" \
+            --publish
