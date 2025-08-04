@@ -1,5 +1,6 @@
 ---
 # Release workflow
+permissions: write-all
 on:
   push:
     branches:
