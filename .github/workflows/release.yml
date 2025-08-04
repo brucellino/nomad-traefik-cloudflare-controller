@@ -11,4 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Test
     steps:
-      - run: "Gonna test stuff now"
+      - uses: actions/checkout@v4
+      - run: echo "Gonna test stuff now"
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Semantic Release
+        run: npx semantic-release
