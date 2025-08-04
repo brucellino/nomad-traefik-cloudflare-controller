@@ -1,6 +1,12 @@
 ---
 # Release workflow
-permissions: write-all
+permissions:
+  actions: write
+  checks: write
+  issues: write
+  packages: write
+  statuses: write
+  pull-requests: write
 on:
   push:
     branches:
