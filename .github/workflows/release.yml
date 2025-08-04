@@ -1,0 +1,14 @@
+---
+# Release workflow
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+      - run: "Gonna test stuff now"
