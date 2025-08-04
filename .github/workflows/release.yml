@@ -2,11 +2,19 @@
 # Release workflow
 permissions:
   actions: write
+  attestations: write
   checks: write
+  contents: write
+  deployments: write
+  id-token: write
   issues: write
+  discussions: write
   packages: write
-  statuses: write
+  pages: write
   pull-requests: write
+  security-events: write
+  statuses: write
+
 on:
   push:
     branches:
