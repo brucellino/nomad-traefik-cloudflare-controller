@@ -1,3 +1,4 @@
+// Package main is the main package for this repository
 package main
 
 import (
@@ -11,10 +12,11 @@ import (
 	"github.com/brucellino/nomad-traefik-cloudflare-controller/cloudflare"
 	"github.com/brucellino/nomad-traefik-cloudflare-controller/config"
 	"github.com/brucellino/nomad-traefik-cloudflare-controller/nomad"
-	"github.com/brucellino/nomad-traefik-cloudflare-controller/types"
+	internaltypes "github.com/brucellino/nomad-traefik-cloudflare-controller/types"
 	"github.com/charmbracelet/log"
 )
 
+// Controller is the main wrapper for the nomad and cloudflare APIs
 type Controller struct {
 	nomadClient      *nomad.Client
 	cloudflareClient *cloudflare.Client
@@ -112,7 +114,7 @@ func (c *Controller) Run(ctx context.Context) error {
 	}
 
 	// Set up event watching
-	eventChan := make(chan types.Event, 100)
+	eventChan := make(chan internaltypes.Event, 100)
 	go func() {
 		if err := c.nomadClient.WatchEvents(ctx, eventChan); err != nil {
 			log.Error("Event watcher error", "error", err)
@@ -151,7 +153,7 @@ func (c *Controller) syncDNSRecords(ctx context.Context) error {
 	log.Info("Syncing DNS records...")
 
 	// Get current Traefik nodes
-	nodes, err := c.nomadClient.GetTraefikNodes(ctx)
+	nodes, err := c.nomadClient.GetTraefikNodes()
 	if err != nil {
 		return err
 	}

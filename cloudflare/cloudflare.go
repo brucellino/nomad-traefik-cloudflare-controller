@@ -1,3 +1,4 @@
+// Package cloudflare provides wrappers for the Cloudflare API.
 package cloudflare
 
 import (
@@ -5,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/brucellino/nomad-traefik-cloudflare-controller/config"
-	"github.com/brucellino/nomad-traefik-cloudflare-controller/types"
+	internaltypes "github.com/brucellino/nomad-traefik-cloudflare-controller/types"
 	"github.com/charmbracelet/log"
 	"github.com/cloudflare/cloudflare-go"
 )
@@ -30,7 +31,7 @@ func NewClient(cfg *config.Config) (*Client, error) {
 }
 
 // getARecords is a function of type cloudflare client which takes a context and returns all A records in a zone
-func (c *Client) getARecords(ctx context.Context) ([]types.DNSRecord, error) {
+func (c *Client) getARecords(ctx context.Context) ([]internaltypes.DNSRecord, error) {
 	records, _, err := c.api.ListDNSRecords(ctx, cloudflare.ZoneIdentifier(c.config.CloudflareZoneId), cloudflare.ListDNSRecordsParams{
 		Name: c.config.DNSRecordName,
 		Type: "A",
@@ -41,10 +42,10 @@ func (c *Client) getARecords(ctx context.Context) ([]types.DNSRecord, error) {
 	}
 
 	// result is a list of DNSRecords to contain the results of the lookup
-	var result []types.DNSRecord
+	var result []internaltypes.DNSRecord
 	// Loop over all of the records we've found and add them to the list of results
 	for _, record := range records {
-		result = append(result, types.DNSRecord{
+		result = append(result, internaltypes.DNSRecord{
 			ID:      record.ID,
 			Name:    record.Name,
 			Type:    record.Type,
@@ -60,7 +61,6 @@ func (c *Client) getARecords(ctx context.Context) ([]types.DNSRecord, error) {
 // which takes a context and a string as parameters
 // and returns an error.
 // It creates a A record in Cloudflare with the specified target as content.
-
 func (c *Client) CreateARecord(ctx context.Context, target string) error {
 	record := cloudflare.CreateDNSRecordParams{
 		Type:    "A",
