@@ -6,7 +6,7 @@ require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/cloudflare/cloudflare-go v0.115.0
 	github.com/cloudflare/cloudflare-go/v5 v5.0.0
-	github.com/hashicorp/nomad/api v0.0.0-20250804210321-8f7480789137
+	github.com/hashicorp/nomad/api v0.0.0-20250805075228-350662c88e49
 )
 
 require (
