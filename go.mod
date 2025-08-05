@@ -5,7 +5,7 @@ go 1.24.2
 require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/cloudflare/cloudflare-go v0.115.0
-	github.com/hashicorp/nomad/api v0.0.0-20250805075228-350662c88e49
+	github.com/hashicorp/nomad/api v0.0.0-20250805181025-0f630004b9b3
 )
 
 require (
