@@ -2,10 +2,10 @@ repos:
   - repo: https://github.com/TekWizely/pre-commit-golang
     rev: v1.0.0-rc.2
     hooks:
-      - id: go-fmt-repo
+      - id: go-fmt
       - id: go-mod-tidy
-      - id: go-test-pkg
-      - id: go-build-pkg
+      - id: go-test-mod
+      - id: go-build-mod
   - repo: https://github.com/oxsecurity/megalinter
     rev: v8.8.0
     hooks:

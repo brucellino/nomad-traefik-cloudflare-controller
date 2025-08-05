@@ -1,4 +1,6 @@
-package types
+// Package internaltypes provides types for this application.
+// It contains structs for Nomad NodeInfo, Cloudflare DNSRecords and Nomad Event
+package internaltypes
 
 import "time"
 

@@ -1,3 +1,4 @@
+// Package nomad is a wrapper for the Nomad API
 package nomad
 
 import (
@@ -6,7 +7,7 @@ import (
 	"time"
 
 	"github.com/brucellino/nomad-traefik-cloudflare-controller/config"
-	"github.com/brucellino/nomad-traefik-cloudflare-controller/types"
+	internaltypes "github.com/brucellino/nomad-traefik-cloudflare-controller/types"
 	"github.com/charmbracelet/log"
 	nomadapi "github.com/hashicorp/nomad/api"
 )
@@ -37,16 +38,15 @@ func NewClient(cfg *config.Config) (*Client, error) {
 // GetTraefikNodes is a function of type NomadClient
 // which takes a context as argument
 // and returns a list of Nodes on which Traefik is deployed, as an error
-
-func (c *Client) GetTraefikNodes(ctx context.Context) ([]types.NodeInfo, error) {
+func (c *Client) GetTraefikNodes() ([]internaltypes.NodeInfo, error) {
 	allocations, _, err := c.client.Jobs().Allocations(c.config.TraefikJobName, true, nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to get allocations for job %s: %w", c.config.TraefikJobName, err)
 	}
 
-	var nodes []types.NodeInfo
-	nodeMap := make(map[string]types.NodeInfo) // avoid duplicate node names?
+	var nodes []internaltypes.NodeInfo
+	nodeMap := make(map[string]internaltypes.NodeInfo) // avoid duplicate node names?
 
 	// loop over allocations to get nodes
 	for _, alloc := range allocations {
@@ -71,7 +71,7 @@ func (c *Client) GetTraefikNodes(ctx context.Context) ([]types.NodeInfo, error) 
 		// }
 
 		// now we can create a nodeinfo object
-		nodeInfo := types.NodeInfo{
+		nodeInfo := internaltypes.NodeInfo{
 			ID:              node.ID,
 			Name:            node.Name,
 			PublicIPAddress: node.Attributes["unique.network.ip-address"],
@@ -90,8 +90,8 @@ func (c *Client) GetTraefikNodes(ctx context.Context) ([]types.NodeInfo, error) 
 
 // WatchEvents is a function of type Nomad client
 // which takes a context and channel as arguments and returns an error
-// It consumes the Nomad Events api described in types
-func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- types.Event) error {
+// It consumes the Nomad Events api described in internaltypes
+func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- internaltypes.Event) error {
 
 	log.Info("Starting Nomad Event consumer")
 
@@ -140,12 +140,12 @@ func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- types.Event) 
 }
 
 // processEvent is a function of type nomad client which takes a nomad event as argument and returns an internal Event type
-func (c *Client) processEvent(event *nomadapi.Event) *types.Event {
+func (c *Client) processEvent(event *nomadapi.Event) *internaltypes.Event {
 	// filter only for events we care about
 	switch event.Type {
 	// when things happen to a node or the job:
 	case "AllocationUpdated", "NodeUpdated", "JobRegistered", "JobDeregistered":
-		processedEvent := &types.Event{
+		processedEvent := &internaltypes.Event{
 			Type:      event.Type,
 			Timestamp: time.Unix(0, int64(event.Index)),
 			Details:   map[string]interface{}{"raw": event},
