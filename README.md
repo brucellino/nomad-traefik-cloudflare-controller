@@ -1,3 +1,5 @@
+[![semantic-release: conventional](https://img.shields.io/badge/semantic--release-conventional-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)[![.github/workflows/release.yml](https://github.com/brucellino/nomad-traefik-cloudflare-controller/actions/workflows/release.yml/badge.svg)](https://github.com/brucellino/nomad-traefik-cloudflare-controller/actions/workflows/release.yml)
+
 # Nomad Traefik Cloudflare Controller
 
 A Nomad controller to control Cloudflare records for Traefik nodes.
