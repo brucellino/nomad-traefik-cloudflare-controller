@@ -1,6 +1,6 @@
 module github.com/brucellino/nomad-traefik-cloudflare-controller
 
-go 1.24.2
+go 1.24.6
 
 require (
 	github.com/charmbracelet/log v0.4.2
