@@ -62,14 +62,6 @@ func (c *Client) GetTraefikNodes() ([]internaltypes.NodeInfo, error) {
 			continue
 		}
 
-		// Get the node's ip info. This is in the unique attributes
-		// nodeAddr := c.extractNodeAddress(node)
-		// // check for errors
-		// if nodeAddr == "" {
-		// 	log.Warn("Could not get the public IP address of the node", "node_id", node.ID)
-		// 	continue
-		// }
-
 		// now we can create a nodeinfo object
 		nodeInfo := internaltypes.NodeInfo{
 			ID:              node.ID,
@@ -114,8 +106,13 @@ func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- internaltypes
 	// Debug log the topics and query options
 	log.Debug("Setting up event stream", "topics", topics, "namespace", queryOpts.Namespace)
 
-	// Start streaming events
-	eventStream, err := c.client.EventStream().Stream(ctx, topics, 0, queryOpts)
+	// Wind forward through historical events to reach the current point
+	log.Info("Winding forward through historical events...")
+	currentIndex := uint64(100000000)
+	log.Info("Starting event processing", "from_index", currentIndex)
+
+	// Start streaming events from the current index
+	eventStream, err := c.client.EventStream().Stream(ctx, topics, currentIndex, queryOpts)
 	if err != nil {
 		return fmt.Errorf("failed to start event stream: %w", err)
 	}
