@@ -41,14 +41,6 @@ github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+l
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
 github.com/hashicorp/go-rootcerts v1.0.2 h1:jzhAVGtqPKbwpyCPELlgNWhE1znq+qwJtW5Oi2viEzc=
 github.com/hashicorp/go-rootcerts v1.0.2/go.mod h1:pqUvnprVnM5bf7AOirdbb01K4ccR319Vf4pU3K5EGc8=
-github.com/hashicorp/nomad/api v0.0.0-20250806174037-6563d0ec3ca8 h1:rRsBUKlcFM8fw+xWSeJ4dhqUHtl8Az7WvTDxXDvtS3o=
-github.com/hashicorp/nomad/api v0.0.0-20250806174037-6563d0ec3ca8/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
-github.com/hashicorp/nomad/api v0.0.0-20250807124441-79bf6198338f h1:qYwpV4R9h7FTSkmMho1MbgliPaUFnX5SpVe1S47ackA=
-github.com/hashicorp/nomad/api v0.0.0-20250807124441-79bf6198338f/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
-github.com/hashicorp/nomad/api v0.0.0-20250807210333-b6f90d0562ae h1:16+yVDUdeZ2lVk6uXFDpHP4zZbQKL9rKqMmNpnDVKbs=
-github.com/hashicorp/nomad/api v0.0.0-20250807210333-b6f90d0562ae/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
-github.com/hashicorp/nomad/api v0.0.0-20250808195558-d305f3201760 h1:pQdXFZx40oJpStTo3gIW9XCyEQMuag5pPNLuYfKyeJw=
-github.com/hashicorp/nomad/api v0.0.0-20250808195558-d305f3201760/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
 github.com/hashicorp/nomad/api v0.0.0-20250811131312-7964c5ab18e1 h1:fy26WEXcxESawJQ1OI2DsBZ8JyQorC7oDNZ349ZYu68=
 github.com/hashicorp/nomad/api v0.0.0-20250811131312-7964c5ab18e1/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
 github.com/lucasb-eyer/go-colorful v1.2.0 h1:1nnpGOrhyZZuNyfu1QjKiUICQ74+3FNCN69Aj6K7nkY=

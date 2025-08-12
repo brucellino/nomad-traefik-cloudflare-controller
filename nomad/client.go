@@ -96,6 +96,9 @@ func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- internaltypes
 	log.Info("Starting Nomad Event consumer")
 
 	// Create query options for event streaming
+	// We set the namespace to default namespace since that is where ingress
+	// should be running.
+	// This might be tunable later.
 	queryOpts := &nomadapi.QueryOptions{
 		Namespace: nomadapi.DefaultNamespace,
 	}
@@ -103,10 +106,13 @@ func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- internaltypes
 
 	// Set up event topics we want to monitor
 	topics := map[nomadapi.Topic][]string{
-		nomadapi.TopicJob:        {c.config.TraefikJobName, "*"},
-		nomadapi.TopicAllocation: {"*"},
-		nomadapi.TopicNode:       {"*"},
+		nomadapi.TopicJob:        []string{c.config.TraefikJobName},
+		nomadapi.TopicAllocation: []string{"AllocationUpdate"},
+		nomadapi.TopicNode:       []string{"*"},
 	}
+
+	// Debug log the topics and query options
+	log.Debug("Setting up event stream", "topics", topics, "namespace", queryOpts.Namespace)
 
 	// Start streaming events
 	eventStream, err := c.client.EventStream().Stream(ctx, topics, 0, queryOpts)
@@ -130,6 +136,8 @@ func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- internaltypes
 				if processedEvent := c.processEvent(&event); processedEvent != nil {
 					select {
 					case eventChan <- *processedEvent:
+						// log the event
+						log.Debug("Received event", "type", processedEvent.Type, "timestamp", processedEvent.Timestamp, "node_id", processedEvent.NodeID, "job_id", processedEvent.JobID)
 					case <-ctx.Done():
 						return ctx.Err()
 					}
