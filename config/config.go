@@ -1,3 +1,5 @@
+// Package config contains the types and support functions for configuring
+// startup of the application.
 package config
 
 import (
@@ -13,7 +15,7 @@ type Config struct {
 
 	// Cloudflare configuration
 	CloudflareToken  string
-	CloudflareZoneId string
+	CloudflareZoneID string
 
 	// Application configuration
 	TraefikJobName string // Name of the Traefik job in the Nomad cluster that we are watching
@@ -36,23 +38,31 @@ func LoadConfig() (*Config, error) {
 		NomadAddress:     getEnvOrDefault("NOMAD_ADDR", "http://localhost:8686"), // This could be nomad.service.consul in a service-discovery cluster.
 		NomadToken:       os.Getenv("NOMAD_TOKEN"),
 		CloudflareToken:  os.Getenv("CLOUDFLARE_API_TOKEN"),
-		CloudflareZoneId: os.Getenv("CLOUDFLARE_ZONE_ID"),
-		TraefikJobName:   os.Getenv("TRAEFIK_JOB_NAME"),
+		CloudflareZoneID: os.Getenv("CLOUDFLARE_ZONE_ID"),
+		TraefikJobName:   getEnvOrDefault("TRAEFIK_JOB_NAME", "ingress"),
 		DNSRecordName:    os.Getenv("DNS_RECORD_NAME"),
 		LogLevel:         getEnvOrDefault("LOG_LEVEL", "info"),
 	}
 
 	// Check if required values are not set
 	if config.CloudflareToken == "" {
-		return nil, fmt.Errorf("CLOUDFLARE_API_TOKEN is not set and is required.")
+		return nil, fmt.Errorf("variable CLOUDFLARE_API_TOKEN is not set and is required")
 	}
 
-	if config.CloudflareZoneId == "" {
-		return nil, fmt.Errorf("CLOUDFLARE_ZONE_ID is not set and is required.")
+	if config.CloudflareZoneID == "" {
+		return nil, fmt.Errorf("variable CLOUDFLARE_ZONE_ID is not set and is required")
+	}
+
+	if config.TraefikJobName == "" {
+		return nil, fmt.Errorf("variable TRAEFIK_JOB_NAME is not set and is required")
+	}
+
+	if config.DNSRecordName == "" {
+		return nil, fmt.Errorf("variable DNS_RECORD_NAME is not set and is required")
 	}
 
 	if config.NomadToken == "" {
-		return nil, fmt.Errorf("Nomad token is not set and is required.")
+		return nil, fmt.Errorf("nomad token is not set and is required")
 	}
 
 	return config, nil

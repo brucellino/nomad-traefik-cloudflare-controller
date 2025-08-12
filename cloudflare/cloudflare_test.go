@@ -70,7 +70,7 @@ func TestCreateARecordValidation(t *testing.T) {
 			target: "1.1.1.1",
 			config: &config.Config{
 				DNSRecordName:    "test.example.com",
-				CloudflareZoneId: "test-zone-id",
+				CloudflareZoneID: "test-zone-id",
 				CloudflareToken:  "test-token",
 			},
 			expectValid: true,
@@ -80,7 +80,7 @@ func TestCreateARecordValidation(t *testing.T) {
 			target: "",
 			config: &config.Config{
 				DNSRecordName:    "test.example.com",
-				CloudflareZoneId: "test-zone-id",
+				CloudflareZoneID: "test-zone-id",
 				CloudflareToken:  "test-token",
 			},
 			expectValid: false,
@@ -90,7 +90,7 @@ func TestCreateARecordValidation(t *testing.T) {
 			target: "1.1.1.1",
 			config: &config.Config{
 				DNSRecordName:    "",
-				CloudflareZoneId: "test-zone-id",
+				CloudflareZoneID: "test-zone-id",
 				CloudflareToken:  "test-token",
 			},
 			expectValid: false,
@@ -102,7 +102,7 @@ func TestCreateARecordValidation(t *testing.T) {
 			// Test input validation without making API calls
 			isValid := tt.target != "" &&
 				tt.config.DNSRecordName != "" &&
-				tt.config.CloudflareZoneId != "" &&
+				tt.config.CloudflareZoneID != "" &&
 				tt.config.CloudflareToken != ""
 
 			if isValid != tt.expectValid {
@@ -191,7 +191,7 @@ func TestNewClient(t *testing.T) {
 			name: "valid configuration",
 			config: &config.Config{
 				CloudflareToken:  "valid-token",
-				CloudflareZoneId: "valid-zone-id",
+				CloudflareZoneID: "valid-zone-id",
 				DNSRecordName:    "test.example.com",
 			},
 			expectError: false,
@@ -200,7 +200,7 @@ func TestNewClient(t *testing.T) {
 			name: "empty token",
 			config: &config.Config{
 				CloudflareToken:  "",
-				CloudflareZoneId: "valid-zone-id",
+				CloudflareZoneID: "valid-zone-id",
 				DNSRecordName:    "test.example.com",
 			},
 			expectError: true,

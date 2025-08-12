@@ -87,6 +87,7 @@ func TestLoadConfig(t *testing.T) {
 				"CLOUDFLARE_API_TOKEN": "test_token",
 				"CLOUDFLARE_ZONE_ID":   "test_zone_id",
 				"NOMAD_TOKEN":          "test_nomad_token",
+				"DNS_RECORD_NAME":      "test.example.com",
 			},
 			expectError: false,
 		},
@@ -95,9 +96,10 @@ func TestLoadConfig(t *testing.T) {
 			envVars: map[string]string{
 				"CLOUDFLARE_ZONE_ID": "test_zone_id",
 				"NOMAD_TOKEN":        "test_nomad_token",
+				"DNS_RECORD_NAME":    "test.example.com",
 			},
 			expectError: true,
-			errorMsg:    "CLOUDFLARE_API_TOKEN is not set and is required.",
+			errorMsg:    "variable CLOUDFLARE_API_TOKEN is not set and is required",
 		},
 		{
 			name: "Missing cloudflare zone id is an invalid configuration since there is no default",
@@ -106,16 +108,17 @@ func TestLoadConfig(t *testing.T) {
 				"NOMAD_TOKEN":          "test_nomad_token",
 			},
 			expectError: true,
-			errorMsg:    "CLOUDFLARE_ZONE_ID is not set and is required.",
+			errorMsg:    "variable CLOUDFLARE_ZONE_ID is not set and is required",
 		},
 		{
 			name: "Missing Nomad token is an invalid configuration since there is no default.",
 			envVars: map[string]string{
 				"CLOUDFLARE_API_TOKEN": "test_token",
 				"CLOUDFLARE_ZONE_ID":   "test_zone_id",
+				"DNS_RECORD_NAME":      "test.example.com",
 			},
 			expectError: true,
-			errorMsg:    "Nomad token is not set and is required.",
+			errorMsg:    "nomad token is not set and is required",
 		},
 	}
 
@@ -175,7 +178,7 @@ func TestLoadConfig(t *testing.T) {
 			if config.CloudflareToken == "" {
 				t.Error("CloudflareToken should be set")
 			}
-			if config.CloudflareZoneId == "" {
+			if config.CloudflareZoneID == "" {
 				t.Error("CloudflareZoneId should be set")
 			}
 			if config.NomadToken == "" {
@@ -213,6 +216,7 @@ func TestLoadConfigDefaults(t *testing.T) {
 	os.Setenv("CLOUDFLARE_API_TOKEN", "test_token")
 	os.Setenv("CLOUDFLARE_ZONE_ID", "test_zone_id")
 	os.Setenv("NOMAD_TOKEN", "test_nomad_token")
+	os.Setenv("DNS_RECORD_NAME", "test.example.com")
 
 	config, err := LoadConfig()
 	if err != nil {

@@ -32,7 +32,7 @@ func NewClient(cfg *config.Config) (*Client, error) {
 
 // getARecords is a function of type cloudflare client which takes a context and returns all A records in a zone
 func (c *Client) getARecords(ctx context.Context) ([]internaltypes.DNSRecord, error) {
-	records, _, err := c.api.ListDNSRecords(ctx, cloudflare.ZoneIdentifier(c.config.CloudflareZoneId), cloudflare.ListDNSRecordsParams{
+	records, _, err := c.api.ListDNSRecords(ctx, cloudflare.ZoneIdentifier(c.config.CloudflareZoneID), cloudflare.ListDNSRecordsParams{
 		Name: c.config.DNSRecordName,
 		Type: "A",
 	})
@@ -69,7 +69,7 @@ func (c *Client) CreateARecord(ctx context.Context, target string) error {
 		TTL:     0,
 	}
 
-	_, err := c.api.CreateDNSRecord(ctx, cloudflare.ZoneIdentifier(c.config.CloudflareZoneId), record)
+	_, err := c.api.CreateDNSRecord(ctx, cloudflare.ZoneIdentifier(c.config.CloudflareZoneID), record)
 	if err != nil {
 		return fmt.Errorf("Failed to create A record %w", err)
 	}
@@ -91,7 +91,7 @@ func (c *Client) UpdateARecord(ctx context.Context, recordID, target string) err
 		TTL:     0,
 	}
 
-	_, err := c.api.UpdateDNSRecord(ctx, cloudflare.ZoneIdentifier(c.config.CloudflareZoneId), record)
+	_, err := c.api.UpdateDNSRecord(ctx, cloudflare.ZoneIdentifier(c.config.CloudflareZoneID), record)
 	if err != nil {
 		return fmt.Errorf("Unable to update DNS Record: %w", err)
 	}
@@ -103,7 +103,7 @@ func (c *Client) UpdateARecord(ctx context.Context, recordID, target string) err
 
 // DeleteARecord is a function of type cloudflare client which takes a context and a record ID as parameters and returns an error
 func (c *Client) DeleteARecord(ctx context.Context, recordID string) error {
-	err := c.api.DeleteDNSRecord(ctx, cloudflare.ZoneIdentifier(c.config.CloudflareZoneId), recordID)
+	err := c.api.DeleteDNSRecord(ctx, cloudflare.ZoneIdentifier(c.config.CloudflareZoneID), recordID)
 	if err != nil {
 		return fmt.Errorf("Failed to delete A record: %w", err)
 	}
