@@ -21,6 +21,7 @@ type Config struct {
 	TraefikJobName string // Name of the Traefik job in the Nomad cluster that we are watching
 	DNSRecordName  string // Name of the DNS A Record we need to create. This is the same as the "instance" variable in the Terraform module
 	LogLevel       string
+	MetricsPort    string // Port for metrics and health endpoints
 }
 
 // getEnvOrDefault is a helper function to use default values for environment variables if they are not explicitly passed.
@@ -42,6 +43,7 @@ func LoadConfig() (*Config, error) {
 		TraefikJobName:   getEnvOrDefault("TRAEFIK_JOB_NAME", "ingress"),
 		DNSRecordName:    os.Getenv("DNS_RECORD_NAME"),
 		LogLevel:         getEnvOrDefault("LOG_LEVEL", "info"),
+		MetricsPort:      getEnvOrDefault("METRICS_PORT", "8080"),
 	}
 
 	// Check if required values are not set
