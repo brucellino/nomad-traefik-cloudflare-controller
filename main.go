@@ -5,12 +5,14 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
 
 	"github.com/brucellino/nomad-traefik-cloudflare-controller/cloudflare"
 	"github.com/brucellino/nomad-traefik-cloudflare-controller/config"
+	"github.com/brucellino/nomad-traefik-cloudflare-controller/metrics"
 	"github.com/brucellino/nomad-traefik-cloudflare-controller/nomad"
 	internaltypes "github.com/brucellino/nomad-traefik-cloudflare-controller/types"
 	"github.com/charmbracelet/log"
@@ -21,6 +23,7 @@ type Controller struct {
 	nomadClient      *nomad.Client
 	cloudflareClient *cloudflare.Client
 	config           *config.Config
+	metricsServer    *metrics.Server
 }
 
 func main() {
@@ -69,11 +72,21 @@ func main() {
 		log.Fatal("Failed to create cloudflare client", "error", err)
 	}
 
+	// Get metrics port from config
+	metricsPort := 8080
+	if port, err := strconv.Atoi(cfg.MetricsPort); err == nil {
+		metricsPort = port
+	}
+
+	// Create metrics server
+	metricsServer := metrics.NewServer(metricsPort)
+
 	// Create controller instance
 	controller := &Controller{
 		nomadClient:      nomadClient,
 		cloudflareClient: cloudflareClient,
 		config:           cfg,
+		metricsServer:    metricsServer,
 	}
 
 	// Set up a context so that we can send signals and have a graceful shutdown
@@ -83,6 +96,13 @@ func main() {
 	// Handle shutdown signals
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+	// Start metrics server
+	go func() {
+		if err := controller.metricsServer.Start(ctx); err != nil {
+			log.Error("Metrics server error", "error", err)
+		}
+	}()
 
 	// anonymous function to receive messages in the channel
 	go func() {
@@ -111,6 +131,9 @@ func (c *Controller) Run(ctx context.Context) error {
 	log.Debug("Running with config", "config", c.config)
 	if err := c.syncDNSRecords(ctx); err != nil {
 		log.Error("Initial sync failed", "error", err)
+	} else {
+		// Mark application as ready after successful initial sync
+		c.metricsServer.SetReady(true)
 	}
 
 	// Set up event watching
@@ -152,9 +175,13 @@ func (c *Controller) Run(ctx context.Context) error {
 func (c *Controller) syncDNSRecords(ctx context.Context) error {
 	log.Info("Syncing DNS records...")
 
+	// Record sync metrics
+	recordMetrics := metrics.RecordSyncStart()
+
 	// Get current Traefik nodes
 	nodes, err := c.nomadClient.GetTraefikNodes()
 	if err != nil {
+		recordMetrics(err, 0, 0)
 		return err
 	}
 
@@ -171,8 +198,12 @@ func (c *Controller) syncDNSRecords(ctx context.Context) error {
 
 	// Sync with Cloudflare
 	if err := c.cloudflareClient.SyncARecords(ctx, ips); err != nil {
+		recordMetrics(err, len(ips), len(nodes))
 		return err
 	}
+
+	// Record successful sync
+	recordMetrics(nil, len(ips), len(nodes))
 
 	log.Info("DNS sync completed", "ip_count", len(ips))
 	return nil
