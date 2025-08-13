@@ -1,11 +1,10 @@
 module github.com/brucellino/nomad-traefik-cloudflare-controller
 
-go 1.24.6
+go 1.25.0
 
 require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/cloudflare/cloudflare-go v0.115.0
-	github.com/cloudflare/cloudflare-go/v5 v5.0.0
 	github.com/hashicorp/nomad/api v0.0.0-20250812194633-2d771f0f103f
 	github.com/prometheus/client_golang v1.23.0
 )
