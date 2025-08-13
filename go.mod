@@ -1,6 +1,7 @@
 module github.com/brucellino/nomad-traefik-cloudflare-controller
 
-go 1.25.0
+//go 1.25.0 // 2025-08-13 cnbp builder does not yet support go 1.25
+go 1.24.6
 
 require (
 	github.com/charmbracelet/log v0.4.2
