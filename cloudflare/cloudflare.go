@@ -62,11 +62,13 @@ func (c *Client) getARecords(ctx context.Context) ([]internaltypes.DNSRecord, er
 // and returns an error.
 // It creates a A record in Cloudflare with the specified target as content.
 func (c *Client) CreateARecord(ctx context.Context, target string) error {
+	proxy := true
 	record := cloudflare.CreateDNSRecordParams{
 		Type:    "A",
 		Name:    c.config.DNSRecordName,
 		Content: target,
 		TTL:     0,
+		Proxied: &proxy,
 	}
 
 	_, err := c.api.CreateDNSRecord(ctx, cloudflare.ZoneIdentifier(c.config.CloudflareZoneID), record)
