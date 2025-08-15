@@ -7,7 +7,7 @@ require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/cloudflare/cloudflare-go v0.115.0
 	github.com/cloudflare/cloudflare-go/v5 v5.0.0
-	github.com/hashicorp/nomad/api v0.0.0-20250813233150-e014fefb357d
+	github.com/hashicorp/nomad/api v0.0.0-20250814232944-7b9bebd653b3
 	github.com/prometheus/client_golang v1.23.0
 )
 
