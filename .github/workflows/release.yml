@@ -55,6 +55,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
       - name: Checkout code
         uses: actions/checkout@v5
       - name: Add target compiler
