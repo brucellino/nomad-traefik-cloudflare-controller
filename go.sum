@@ -18,8 +18,6 @@ github.com/charmbracelet/x/term v0.2.1 h1:AQeHeLZ1OqSXhrAWpYUtZyX1T3zVxfpZuEQMIQ
 github.com/charmbracelet/x/term v0.2.1/go.mod h1:oQ4enTYFV7QN4m0i9mzHrViD7TQKvNEEkHUMCmsxdUg=
 github.com/cloudflare/cloudflare-go v0.115.0 h1:84/dxeeXweCc0PN5Cto44iTA8AkG1fyT11yPO5ZB7sM=
 github.com/cloudflare/cloudflare-go v0.115.0/go.mod h1:Ds6urDwn/TF2uIU24mu7H91xkKP8gSAHxQ44DSZgVmU=
-github.com/cloudflare/cloudflare-go/v5 v5.0.0/go.mod h1:C6OjOlDHOk/g7lXehothXJRFZrSIJMLzOZB2SXQhcjk=
-github.com/cloudflare/cloudflare-go/v5 v5.1.0/go.mod h1:C6OjOlDHOk/g7lXehothXJRFZrSIJMLzOZB2SXQhcjk=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/docker/go-units v0.5.0 h1:69rxXcBk27SvSaaxTtLh/8llcHD8vYHT7WSdRZ/jvr4=
@@ -47,14 +45,6 @@ github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+l
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
 github.com/hashicorp/go-rootcerts v1.0.2 h1:jzhAVGtqPKbwpyCPELlgNWhE1znq+qwJtW5Oi2viEzc=
 github.com/hashicorp/go-rootcerts v1.0.2/go.mod h1:pqUvnprVnM5bf7AOirdbb01K4ccR319Vf4pU3K5EGc8=
-github.com/hashicorp/nomad/api v0.0.0-20250812194633-2d771f0f103f h1:W7TTjxF7B5SmFjn6Z9xXDaPw7PGK08t0Lz2kREJCVzM=
-github.com/hashicorp/nomad/api v0.0.0-20250812194633-2d771f0f103f/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
-github.com/hashicorp/nomad/api v0.0.0-20250813140650-c997afe0decc h1:FkpQRMz6p9JKC/ieTyQy322U+TgYTQHuFlxlRGf9R/c=
-github.com/hashicorp/nomad/api v0.0.0-20250813140650-c997afe0decc/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
-github.com/hashicorp/nomad/api v0.0.0-20250813233150-e014fefb357d h1:DVun1UYyzZr6qhZTevW+B7pkGJn5CTGTEOdI55ji7m8=
-github.com/hashicorp/nomad/api v0.0.0-20250813233150-e014fefb357d/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
-github.com/hashicorp/nomad/api v0.0.0-20250814232944-7b9bebd653b3 h1:nrSdfTAVcuDZEdtq+G72kW8nG9SB0vo0MdcENEETBn0=
-github.com/hashicorp/nomad/api v0.0.0-20250814232944-7b9bebd653b3/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
 github.com/hashicorp/nomad/api v0.0.0-20250815145352-d1186ae53e30 h1:CyYnTzOg1p3ce558Ra+RLO+ACNzXXKo/qxbSiUoEUek=
 github.com/hashicorp/nomad/api v0.0.0-20250815145352-d1186ae53e30/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
 github.com/klauspost/compress v1.18.0 h1:c/Cqfb0r+Yi+JtIEq73FWXVkRonBlf0CRNYc8Zttxdo=
