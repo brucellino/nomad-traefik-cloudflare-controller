@@ -59,6 +59,13 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          TAG="$(git describe --tags --abbrev=0 2>/dev/null || echo latest)"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
       - name: Add target compiler
         run: sudo apt-get update && sudo apt-get install -y qemu-efi-aarch64
       - name: Install pack CLI
@@ -71,7 +78,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build container image
         env:
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ steps.get_tag.outputs.tag }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pack build "ghcr.io/brucellino/nomad-traefik-cloudflare-controller:${IMAGE_TAG}" \
