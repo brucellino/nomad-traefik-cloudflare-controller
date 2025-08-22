@@ -12,6 +12,57 @@ import (
 	nomadapi "github.com/hashicorp/nomad/api"
 )
 
+const (
+	// ErrorRateThreshold is the maximum number of errors per second before shutdown
+	ErrorRateThreshold = 10.0
+	// MaxRetries is the maximum number of consecutive retries before applying max delay
+	MaxRetries = 5
+	// BaseRetryDelay is the initial retry delay
+	BaseRetryDelay = 1 * time.Second
+	// MaxRetryDelay is the maximum retry delay
+	MaxRetryDelay = 30 * time.Second
+)
+
+// errorRateTracker tracks the rate of errors over time
+type errorRateTracker struct {
+	errors    []time.Time
+	threshold float64 // errors per second threshold
+}
+
+// newErrorRateTracker creates a new error rate tracker with the given threshold
+func newErrorRateTracker(threshold float64) *errorRateTracker {
+	return &errorRateTracker{
+		errors:    make([]time.Time, 0),
+		threshold: threshold,
+	}
+}
+
+// addError records a new error occurrence
+func (ert *errorRateTracker) addError() {
+	now := time.Now()
+	ert.errors = append(ert.errors, now)
+
+	// Clean up errors older than 1 second to maintain a rolling window
+	cutoff := now.Add(-time.Second)
+	var validErrors []time.Time
+	for _, errorTime := range ert.errors {
+		if errorTime.After(cutoff) {
+			validErrors = append(validErrors, errorTime)
+		}
+	}
+	ert.errors = validErrors
+}
+
+// exceedsThreshold checks if the current error rate exceeds the threshold
+func (ert *errorRateTracker) exceedsThreshold() bool {
+	return float64(len(ert.errors)) > ert.threshold
+}
+
+// reset clears all recorded errors
+func (ert *errorRateTracker) reset() {
+	ert.errors = ert.errors[:0]
+}
+
 // This Client type wraps the Nomad API
 type Client struct {
 	client *nomadapi.Client
@@ -87,6 +138,61 @@ func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- internaltypes
 
 	log.Info("Starting Nomad Event consumer")
 
+	// Create error rate tracker with configured threshold
+	errorTracker := newErrorRateTracker(ErrorRateThreshold)
+
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
+		}
+
+		err := c.watchEventStream(ctx, eventChan, errorTracker)
+		if err == nil {
+			return nil // Clean shutdown
+		}
+
+		if ctx.Err() != nil {
+			return ctx.Err() // Context cancelled
+		}
+
+		// Check if error rate exceeds threshold
+		if errorTracker.exceedsThreshold() {
+			log.Error("Event stream error rate exceeds threshold, shutting down",
+				"error_count", len(errorTracker.errors),
+				"threshold", errorTracker.threshold,
+				"last_error", err)
+			return fmt.Errorf("event stream error rate exceeded threshold: %w", err)
+		}
+
+		// Calculate retry delay with exponential backoff
+		retryCount := len(errorTracker.errors)
+		if retryCount > MaxRetries {
+			retryCount = MaxRetries
+		}
+
+		delay := time.Duration(retryCount) * BaseRetryDelay
+		if delay > MaxRetryDelay {
+			delay = MaxRetryDelay
+		}
+
+		log.Warn("Event stream failed, retrying after delay",
+			"error", err,
+			"retry_delay", delay,
+			"error_count", len(errorTracker.errors))
+
+		// Wait before retrying
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-time.After(delay):
+		}
+	}
+}
+
+// watchEventStream handles a single event stream connection
+func (c *Client) watchEventStream(ctx context.Context, eventChan chan<- internaltypes.Event, errorTracker *errorRateTracker) error {
 	// Create query options for event streaming
 	// We set the namespace to default namespace since that is where ingress
 	// should be running.
@@ -114,8 +220,13 @@ func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- internaltypes
 	// Start streaming events from the current index
 	eventStream, err := c.client.EventStream().Stream(ctx, topics, currentIndex, queryOpts)
 	if err != nil {
+		errorTracker.addError()
 		return fmt.Errorf("failed to start event stream: %w", err)
 	}
+
+	// Reset error tracker on successful connection
+	errorTracker.reset()
+	log.Info("Event stream connected successfully")
 
 	// Process events
 	for {
@@ -124,8 +235,10 @@ func (c *Client) WatchEvents(ctx context.Context, eventChan chan<- internaltypes
 			return ctx.Err()
 		case eventWrapper := <-eventStream:
 			if eventWrapper.Err != nil {
+				errorTracker.addError()
 				log.Error("Event stream error", "error", eventWrapper.Err)
-				continue
+				// Exit on error.
+				return fmt.Errorf("event stream error: %w", eventWrapper.Err)
 			}
 
 			// Process each event in the wrapper

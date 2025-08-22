@@ -45,16 +45,6 @@ github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+l
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
 github.com/hashicorp/go-rootcerts v1.0.2 h1:jzhAVGtqPKbwpyCPELlgNWhE1znq+qwJtW5Oi2viEzc=
 github.com/hashicorp/go-rootcerts v1.0.2/go.mod h1:pqUvnprVnM5bf7AOirdbb01K4ccR319Vf4pU3K5EGc8=
-github.com/hashicorp/nomad/api v0.0.0-20250815145352-d1186ae53e30 h1:CyYnTzOg1p3ce558Ra+RLO+ACNzXXKo/qxbSiUoEUek=
-github.com/hashicorp/nomad/api v0.0.0-20250815145352-d1186ae53e30/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
-github.com/hashicorp/nomad/api v0.0.0-20250818185800-f3e08d8aa907 h1:rLvDMve7rmCOmwUeDKiYpguTAyoyRapiKAssS0P2zog=
-github.com/hashicorp/nomad/api v0.0.0-20250818185800-f3e08d8aa907/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
-github.com/hashicorp/nomad/api v0.0.0-20250819191717-80ddb7392a39 h1:kh79mRpsbjn2VmN8j9iaMZqW2PyQeDwqkMSezJCbRic=
-github.com/hashicorp/nomad/api v0.0.0-20250819191717-80ddb7392a39/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
-github.com/hashicorp/nomad/api v0.0.0-20250820214743-694e0ac2e3e4 h1:xclhHBQxidDOHV2JYchS9S/JYkAxrKzx/cl/m7c0WS4=
-github.com/hashicorp/nomad/api v0.0.0-20250820214743-694e0ac2e3e4/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
-github.com/hashicorp/nomad/api v0.0.0-20250821133753-e7868639d69a h1:/QUKSlq5RFzEuiBLyn1wPiTkBi33JDdwQNtLshT3X6o=
-github.com/hashicorp/nomad/api v0.0.0-20250821133753-e7868639d69a/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
 github.com/hashicorp/nomad/api v0.0.0-20250821232935-f6a078c7e5c7 h1:7NFpEiPlrskNVXm5eQC+j+jXGnx2HhVpKC6+0l4lBfo=
 github.com/hashicorp/nomad/api v0.0.0-20250821232935-f6a078c7e5c7/go.mod h1:y4olHzVXiQolzyk6QD/gqJxQTnnchlTf/QtczFFKwOI=
 github.com/klauspost/compress v1.18.0 h1:c/Cqfb0r+Yi+JtIEq73FWXVkRonBlf0CRNYc8Zttxdo=

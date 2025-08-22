@@ -138,9 +138,14 @@ func (c *Controller) Run(ctx context.Context) error {
 
 	// Set up event watching
 	eventChan := make(chan internaltypes.Event, 100)
+	eventErrorChan := make(chan error, 1)
 	go func() {
 		if err := c.nomadClient.WatchEvents(ctx, eventChan); err != nil {
-			log.Error("Event watcher error", "error", err)
+			log.Error("Event watcher fatal error", "error", err)
+			select {
+			case eventErrorChan <- err:
+			case <-ctx.Done():
+			}
 		}
 	}()
 
@@ -153,6 +158,11 @@ func (c *Controller) Run(ctx context.Context) error {
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
+
+		// Event watcher fatal error - shut down gracefully
+		case err := <-eventErrorChan:
+			log.Error("Event watcher exceeded error threshold, shutting down", "error", err)
+			return err
 
 		// Nomad event in channel
 		case event := <-eventChan:
