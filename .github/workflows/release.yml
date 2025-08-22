@@ -81,7 +81,7 @@ jobs:
           IMAGE_TAG: ${{ steps.get_tag.outputs.tag }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pack build "ghcr.io/brucellino/nomad-traefik-cloudflare-controller:${IMAGE_TAG}" \
+          pack build "ghcr.io/brucellino/nomad-traefik-cloudflare-controller:${IMAGE_TAG}-${{ matrix.arch }}" \
             --builder "heroku/builder:24" --path=. \
             --platform "linux/${{ matrix.arch }}" \
             --env CGO_ENABLED=0 \
