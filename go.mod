@@ -6,7 +6,7 @@ go 1.24.6
 require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/cloudflare/cloudflare-go v0.115.0
-	github.com/hashicorp/nomad/api v0.0.0-20250905185308-0e9eb5ae43fd
+	github.com/hashicorp/nomad/api v0.0.0-20250908192108-cb3e49f3e4a7
 	github.com/prometheus/client_golang v1.23.0
 )
 
@@ -23,7 +23,7 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
-	github.com/hashicorp/cronexpr v1.1.2 // indirect
+	github.com/hashicorp/cronexpr v1.1.3 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
