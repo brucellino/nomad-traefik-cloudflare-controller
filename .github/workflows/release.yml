@@ -69,7 +69,7 @@ jobs:
       - name: Add target compiler
         run: sudo apt-get update && sudo apt-get install -y qemu-efi-aarch64
       - name: Install pack CLI
-        uses: buildpacks/github-actions/setup-pack@v5.9.3
+        uses: buildpacks/github-actions/setup-pack@v5.9.4
       - name: Log in to Container Registry
         uses: docker/login-action@v3
         with:
