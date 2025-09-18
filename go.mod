@@ -6,7 +6,7 @@ go 1.24.6
 require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/cloudflare/cloudflare-go v0.115.0
-	github.com/hashicorp/nomad/api v0.0.0-20250917172301-3432b0a2d65c
+	github.com/hashicorp/nomad/api v0.0.0-20250918132123-f42239bf6c40
 	github.com/prometheus/client_golang v1.23.0
 )
 
