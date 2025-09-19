@@ -79,6 +79,8 @@ github.com/hashicorp/nomad/api v0.0.0-20250917172301-3432b0a2d65c h1:LhffOwgZaEV
 github.com/hashicorp/nomad/api v0.0.0-20250917172301-3432b0a2d65c/go.mod h1:sldFTIgs+FsUeKU3LwVjviAIuksxD8TzDOn02MYwslE=
 github.com/hashicorp/nomad/api v0.0.0-20250918132123-f42239bf6c40 h1:npS+CirsRaYZt2iUQpxQS2IVjuJqUOCG3GfIsf9d9NQ=
 github.com/hashicorp/nomad/api v0.0.0-20250918132123-f42239bf6c40/go.mod h1:sldFTIgs+FsUeKU3LwVjviAIuksxD8TzDOn02MYwslE=
+github.com/hashicorp/nomad/api v0.0.0-20250919161717-b5530128df74 h1:P8MrVYL3TYh7dTAZADv51vtZb+rAKVgQ37aQzyAPt5Y=
+github.com/hashicorp/nomad/api v0.0.0-20250919161717-b5530128df74/go.mod h1:sldFTIgs+FsUeKU3LwVjviAIuksxD8TzDOn02MYwslE=
 github.com/klauspost/compress v1.18.0 h1:c/Cqfb0r+Yi+JtIEq73FWXVkRonBlf0CRNYc8Zttxdo=
 github.com/klauspost/compress v1.18.0/go.mod h1:2Pp+KzxcywXVXMr50+X0Q/Lsb43OQHYWRCY2AiWywWQ=
 github.com/kylelemons/godebug v1.1.0 h1:RPNrshWIDI6G2gRW9EHilWtl7Z6Sb1BR0xunSBf0SNc=
