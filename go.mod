@@ -1,12 +1,12 @@
 module github.com/brucellino/nomad-traefik-cloudflare-controller
 
 //go 1.25.0 // 2025-08-13 cnbp builder does not yet support go 1.25
-go 1.24.6
+go 1.26
 
 require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/cloudflare/cloudflare-go v0.116.0
-	github.com/hashicorp/nomad/api v0.0.0-20260121145457-0983864e2b57
+	github.com/hashicorp/nomad/api v0.0.0-20261001163103-3a9af341c94e
 	github.com/prometheus/client_golang v1.23.2
 )
 
@@ -20,6 +20,7 @@ require (
 	github.com/charmbracelet/x/cellbuf v0.0.13-0.20250311204145-2c3ea96c31dd // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
+	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
