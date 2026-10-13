@@ -71,7 +71,7 @@ jobs:
       - name: Install pack CLI
         uses: buildpacks/github-actions/setup-pack@v5.12.4
       - name: Log in to Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
